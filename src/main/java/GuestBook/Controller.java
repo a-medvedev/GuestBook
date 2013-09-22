@@ -79,4 +79,20 @@ public class Controller implements IGuestBookController {
         }
         return records;  //To change body of implemented methods use File | Settings | File Templates.
     }
+
+    public void closeConnections(){
+        try {
+            if (addStatement != null){
+                addStatement.close();
+            }
+            if(listStatement != null){
+                listStatement.close();
+            }
+            if (link != null){
+                link.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+    }
 }

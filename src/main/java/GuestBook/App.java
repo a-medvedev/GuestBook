@@ -38,6 +38,7 @@ public class App
             String query = input.nextLine();
             switch (query.toUpperCase().trim()){
                 case "EXIT":
+                    ctrl.closeConnections();
                     return;
                 case "ADD":
                     System.out.print("Представьтесь, пожалуйста: ");
