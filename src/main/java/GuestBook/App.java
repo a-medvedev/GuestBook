@@ -15,19 +15,11 @@ public class App
 {
     public static void main( String[] args )
     {
-       Controller ctrl = new Controller();
-//       ctrl.addRecord("Hello", "me");
-//       ctrl.addRecord("Hi", "another user");
-//       ctrl.addRecord("", "");
-//
-//        List<Record> recs = ctrl.getRecords();
-//
-//        for (Record r : recs){
-//            System.out.println("ID: " + r.id);
-//            System.out.println("User: " + r.user + "\t\tDate: " + new Date(r.date).toString());
-//            System.out.println("Message: " + r.message);
-//            System.out.println("++++++++++++++++++++++++++++++++++++++++++++++");
-//        }
+        Controller ctrl = new Controller();
+        if (!ctrl.isready()){
+            return;
+        }
+
         System.out.println("Гостевая книга");
         System.out.println("EXIT: выход");
         System.out.println("ADD: добавляет сообщение от имени указанного пользователя ");

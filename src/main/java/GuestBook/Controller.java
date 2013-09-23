@@ -9,6 +9,7 @@ public class Controller implements IGuestBookController {
     private Connection link;
     private PreparedStatement addStatement;
     private PreparedStatement listStatement;
+    private boolean isReady = false;
 
     //Данные для подключения
     private String login = "gb_admin", password = "test";
@@ -20,10 +21,14 @@ public class Controller implements IGuestBookController {
             link = DriverManager.getConnection(query, login, password);
             createTable();
             prepareStatements();
+            isReady = true;
         } catch (SQLException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            System.out.println("Произошла ошибка работы с СУБД.");
+            isReady = false;
+            throw new RuntimeException();
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            System.out.println("Драйвер БД не загружен.");
+            isReady = false;
         }
     }
 
@@ -38,13 +43,11 @@ public class Controller implements IGuestBookController {
         );
     }
 
-    private boolean prepareStatements() throws SQLException {
+    private void prepareStatements() throws SQLException {
         if (link != null){
             addStatement = link.prepareStatement("INSERT INTO posts (user, date, post) VALUES (?, ?, ?)");
             listStatement = link.prepareStatement("SELECT * FROM posts");
-            return true;
         }
-        return false;
     }
 
     @Override
@@ -56,7 +59,8 @@ public class Controller implements IGuestBookController {
                 addStatement.setString(3, message);
                 addStatement.execute();
             } catch (SQLException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                System.out.println("Произошла ошибка добавления сообщения.");
+                throw new RuntimeException();
             }
         }
     }
@@ -75,9 +79,14 @@ public class Controller implements IGuestBookController {
                 records.add(r);
             }
         } catch (SQLException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            System.out.println("Произошла ошибка чтения сообщений.");
+            throw new RuntimeException();
         }
-        return records;  //To change body of implemented methods use File | Settings | File Templates.
+        return records;
+    }
+
+    public boolean isready(){
+        return this.isReady;
     }
 
     public void closeConnections(){
@@ -92,7 +101,8 @@ public class Controller implements IGuestBookController {
                 link.close();
             }
         } catch (SQLException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            System.out.println("Работа с БД завершена некорректно.");
+            throw new RuntimeException();
         }
     }
 }
